@@ -9,10 +9,11 @@
         "useBuiltIns": "usage",
         "corejs": "3.6.5"
       }
-    ],
-    ["@babel/preset-typeScript", {"isolatedModules": true}]
+    ]
+    // ["@babel/preset-typeScript", {"isolatedModules": true}]
   ],
   "plugins": [
+    // "const-enum",
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread"
   ]
