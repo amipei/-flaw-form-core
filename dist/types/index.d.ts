@@ -1,2 +1,2 @@
-import StatusSubject from "./notify/StatusSubject";
-export default StatusSubject;
+declare const Add: (v1: any, v2: any) => any;
+export default Add;
