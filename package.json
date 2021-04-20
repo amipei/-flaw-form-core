@@ -1,8 +1,9 @@
 {
   "name": "flaw-form",
-  "version": "1.2.0",
+  "version": "1.0.0",
   "description": "",
-  "main": "dist/rollup-plugin-babel.esm.js",
+  "main": "dist/rollup-plugin-babel.cjs.js",
+  "module": "dist/rollup-plugin-babel.esm.js",
   "browser": "dist/rollup-plugin-babel.iife.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
@@ -35,8 +36,6 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.12.1",
-    "lodash-es": "^4.17.21",
-    "rxjs": "^6.6.6"
+    "@babel/polyfill": "^7.12.1"
   }
 }
