@@ -4,4 +4,8 @@ var Add = function Add(v1, v2) {
   return v1 + v2;
 };
 
-module.exports = Add;
+var index = {
+  Add: Add
+};
+
+module.exports = index;

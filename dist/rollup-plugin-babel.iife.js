@@ -5,6 +5,10 @@ var RollupTypeScriptBabel = (function () {
       return v1 + v2;
     };
 
-    return Add;
+    var index = {
+      Add: Add
+    };
+
+    return index;
 
 }());
