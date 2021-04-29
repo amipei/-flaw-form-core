@@ -2,12 +2,10 @@
 // 校验: 同步/异步校验函数
 
 import StateSubject from "../notify";
-import { FormStatus, AbstractControl, FORM_STATUS } from "../shared/AbstractControl";
-import { FormTrigger, FormState, UIStatus, FormStateBoxedValue, FormOptions } from "../types";
+import { FormStatus, AbstractControl, FORM_STATUS, AbstractControlOptions } from "../shared/AbstractControl";
+import { FormState, UIStatus, FormStateBoxedValue } from "../types";
 import Validation from "../validator";
 
-
-type ValidationTrigger = 'change' | 'blur' | 'submit' | 'all';
 
 interface State<T> {
   value: T
@@ -19,28 +17,28 @@ interface valueChangelistener<T> {
   (valur: T | null): void
 }
 
-class FormControl<T> implements AbstractControl {
+class FormControl<T> extends AbstractControl {
   value!: T | null;
 
   status!: FormStatus;
 
   errors: any;
 
-  trigger!: FormTrigger;
-  validateAll!: boolean;
-  selfValidate!: boolean;
   validation: any;
   statusSubject: any;
 
   stateSubject!: StateSubject<State<T>>;
   currentTrigger: any;
 
-  constructor(formState: FormState<T> = null, opts: any = {}) {
+  constructor(
+    formState: FormState<T> = null,
+    opts: AbstractControlOptions<AbstractControl> = {}
+  ) {
+    super();
     //申请表单状态
     this._applyFormState(formState);
-    //设置校验策略
+    //设置策略
     this._setStrategy(opts);
-    
     //初始化校验
     this._initValidator(opts);
     //初始化通知
@@ -49,6 +47,12 @@ class FormControl<T> implements AbstractControl {
     if (this.selfValidate) {
       this.validity();
     }
+  }
+  public add(path: string, control: AbstractControl) {
+    throw new Error("Method not implemented.");
+  }
+  public getControl(path: string) {
+    throw new Error("Method not implemented.");
   }
 
   /**
@@ -82,14 +86,14 @@ class FormControl<T> implements AbstractControl {
   } = {}) {
     this.value = value;
 
-    this.currentTrigger = opts?.trigger ?? 'all';
+    this.currentTrigger = opts?.trigger ?? null;
 
     if (this.valueChangelisteners.length && opts.emitModelToViewChange !== false) {
       this.valueChangelisteners.forEach((listener) => listener(this.value));
     }
     this.validity();
   }
-  
+
   get enabled() {
     return ['VALID', 'INVALID', 'VALIDATING'].includes(this.status);
   }
@@ -144,7 +148,7 @@ class FormControl<T> implements AbstractControl {
     this.stateSubject.notify(salaStatus);
   }
   subscribe(subscriber: Function, subscription: any) {
-    return this.statusSubject.subscribe(subscriber, subscription)
+    return this.stateSubject.subscribe(subscriber as any, subscription)
   }
 
   private _applyFormState(formState: FormState<T>): void {
@@ -162,13 +166,7 @@ class FormControl<T> implements AbstractControl {
       Object.keys(formState).length === 2 && 'value' in formState && 'status' in formState;
   }
 
-  private _setStrategy(opts: FormOptions) {
-    this.trigger = opts?.trigger ?? 'change';
-    this.validateAll = opts?.validateAll ?? false;
-    this.selfValidate = opts?.selfValidate ?? false;
-  }
-
-  private _initValidator(opts: FormOptions) {
+  private _initValidator(opts: AbstractControlOptions<AbstractControl> = {}) {
     this.validation = new Validation(opts.validator as any, opts.asyncValidator as any, 'change')
   }
 

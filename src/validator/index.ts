@@ -14,11 +14,11 @@ interface ValidationErrors {
   [key: string]: any
 }
 
-interface ValidatorFn<Context> {
+export interface ValidatorFn<Context> {
   (context: Context): ValidationErrors | null
 }
 
-interface AsyncValidatorFn<Context> {
+export interface AsyncValidatorFn<Context> {
   (context: Context): Promise<ValidationErrors | null>
 }
 
@@ -27,7 +27,7 @@ type GeneralValidatorMeta<ValidatorType, Trigger> = {
   trigger: Trigger
 }
 
-type GeneralValidator<ValidatorType, Trigger> =
+export type GeneralValidator<ValidatorType, Trigger> =
   ValidatorType | GeneralValidatorMeta<ValidatorType, Trigger> |
   Array<ValidatorType | GeneralValidatorMeta<ValidatorType, Trigger>> | null;
 

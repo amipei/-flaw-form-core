@@ -4,7 +4,7 @@ import babel from '@rollup/plugin-babel';
 import pkg from './package.json'
 const inputFileName = "src/main.ts";
 const extensions = [
-  '.js', '.jsx', '.ts', '.tsx',
+  '.js', '.ts'
 ];
 export default [{
   //输出浏览器
@@ -14,9 +14,14 @@ export default [{
     format: 'cjs'
   }, {
     file: pkg.module,
-    format: 'es',
+    format: 'esm',
   }],
   plugins: [
-    babel({ babelHelpers:'runtime', extensions, include: ['src/**'] }),
+    resolve({
+      mainFields: ['module', 'main', 'jsnext:main', 'browser'],
+      extensions
+    }),
+    commonjs(),
+    babel({ exclude: './node_modules/**', babelHelpers: 'runtime', extensions }),
   ]
 }]

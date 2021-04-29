@@ -10,3 +10,9 @@ export const isFunction = (value?: any): value is ((...args: any[]) => any) => {
   }
   return Object.prototype.toString.call(value) == '[object Function]';
 }
+
+export const omit = <T extends Object>(obj: T, uselessKeys: string[]) => {
+  return Object.keys(obj).reduce((acc, key) => {
+    return uselessKeys.includes(key) ? acc : {...acc, [key]: obj[key]}
+  }, {})
+}
