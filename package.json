@@ -1,6 +1,6 @@
 {
   "name": "@flaw-form/core",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "这是一个受Angular Forms影响而开发的表单库。",
   "keywords": [
     "form",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/amipei/flaw-form.git"
+    "url": "git+https://github.com/amipei/-flaw-form-core.git"
   },
   "author": "amipei",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/amipei/flaw-form/issues"
+    "url": "https://github.com/amipei/-flaw-form-core/issues"
   },
-  "homepage": "https://github.com/amipei/flaw-form#readme",
+  "homepage": "https://github.com/amipei/-flaw-form-core#readme",
   "devDependencies": {
     "@babel/cli": "^7.13.16",
     "@babel/core": "^7.13.16",
