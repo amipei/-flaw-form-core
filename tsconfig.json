@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "ES2017",
+    "target": "es2020",
     "module": "ESNext",
     /* 输出目录 */
     //"outDir": "./lib/types",
@@ -16,7 +16,7 @@
     "forceConsistentCasingInFileNames": true,
     /* 只生成类型文件，不转换代码 */
     "declaration": true,
-    "declarationDir": "./types",
+    "declarationDir": "./lib/types",
     "emitDeclarationOnly": true
   },
   /* 只编译 src目录下的文件 */
