@@ -1,5 +1,3 @@
-
-
 export class GroupModel {
   constructor(
     private controls: any,

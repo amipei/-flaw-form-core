@@ -1,10 +1,7 @@
-
-import FormControl from "./model/FormControl";
-import FormGroup from "./model/FormGroup";
-import { GroupModel } from "./shared/defineModel";
+import FormControl from "./models/FormControl";
+import FormGroup from "./models/FormGroup";
+import { GroupModel } from "./schemas";
 import { omit } from "./shared/utils";
-
-export { default as defineModel } from "./shared/defineModel";
 
 const createForm = (
   formModel: any
