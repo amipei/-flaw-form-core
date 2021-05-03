@@ -102,7 +102,7 @@ class FormControl<V> extends AbstractControl {
     }
   }
 
-  private _isBoxedValue(formState: FormState<V>): formState is FormStateBoxedValue<T> {
+  private _isBoxedValue(formState: FormState<V>): formState is FormStateBoxedValue<V> {
     return typeof formState === 'object' && formState !== null &&
       Object.keys(formState).length === 2 && 'value' in formState && 'status' in formState;
   }

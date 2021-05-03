@@ -1,5 +1,5 @@
-import { FormTrigger } from "../types";
-import { AsyncValidatorFn, GeneralValidator, ValidatorFn } from "../validator";
+import StateSubject from "../notify";
+import { AsyncValidatorFn, GeneralValidator, Validator, ValidatorFn } from "./validator";
 /**
  * 表单状态：包括表单控件组和表单控件。
  * VALID:      表单处于合法状态
@@ -19,16 +19,9 @@ export declare const FORM_STATUS: {
 };
 declare type ValueOf<T> = T[keyof T];
 export declare type FormStatus = ValueOf<typeof FORM_STATUS>;
-/**
- * 提供给 'AbstractControl' 的选项接口
- * @publicApi
- */
-export interface AbstractControlOptions<Context> {
-    /**
-     * @description
-     * 触发控件更新状态的事件名。
-     */
-    trigger?: FormTrigger;
+export declare type UIStatus = `${Lowercase<Extract<FormStatus, 'DISABLED' | 'READONLY' | 'HIDDEN'>>}`;
+export declare type TriggerType = 'change' | 'blur' | 'sbumit';
+export interface AbstractControlOptions {
     /**
      * @description
      * 控制是否走完全部校验过程（即得到全部的errors）。
@@ -43,26 +36,23 @@ export interface AbstractControlOptions<Context> {
      * @description
      * 控件的同步校验器列表
      */
-    validator?: GeneralValidator<ValidatorFn<Context>, FormTrigger>;
+    validator?: GeneralValidator<ValidatorFn>;
     /**
      * @description
      * 控件的异步校验器列表
      */
-    asyncValidator?: GeneralValidator<AsyncValidatorFn<Context>, FormTrigger>;
+    asyncValidator?: GeneralValidator<AsyncValidatorFn>;
 }
-export declare abstract class AbstractControl {
-    constructor();
+/**
+ *  这是 `FormControl`,`FormGroup`,`FormArray`的抽象基类。
+ */
+declare abstract class AbstractControl {
+    #private;
     /**
-     * 表示当前 AbstractControl 的触发策略（表示控件用来更新自身状态的事件）。
-     * 预期的值有 'change'|'blur'|'submit'，默认值的'change'。
-     * 值的来源来自父控件初始化的trigger值或用户初始值（初始化后只读）。
-     */
-    protected trigger: FormTrigger;
-    /**
-     * 表示当前 AbstractControl 的校验策略（是否走完全部校验流程）。
-     * 预期的值有 false（错误直接停止校验）和 true（错误不停止校验）,默认值为 false。
-     * 值的来源同 trigger 属性。
-     */
+       * 表示当前 AbstractControl 的校验策略（是否走完全部校验流程）。
+       * 预期的值有 false（错误直接停止校验）和 true（错误不停止校验）,默认值为 false。
+       * 值的来源同 trigger 属性。
+       */
     protected validateAll: boolean;
     /**
      * 表示当前 AbstractControl 的初始化/启用后是否校验。
@@ -71,9 +61,61 @@ export declare abstract class AbstractControl {
      */
     protected selfValidate: boolean;
     /**
-     * 设置控件的行为策略，包括：校验触发策略、校验过程策略、控件启用时校验策略
-     * @param opts
+     * 存放校验程序
      */
-    protected _setStrategy(opts: AbstractControlOptions<AbstractControl>): void;
+    validator: Validator;
+    /**
+     * 控件当前状态
+     */
+    status: any;
+    /**
+     * 错误
+     */
+    errors: {
+        [key: string]: any;
+    } | null;
+    value: any;
+    stateSubject: StateSubject<any>;
+    constructor();
+    /**
+     * currentTrigger 存取器，用于校验时取出相关事件的校验器。
+     */
+    set currentTrigger(trigger: TriggerType | null);
+    get currentTrigger(): TriggerType | null;
+    get enabled(): boolean;
+    /**
+       * 启用表单控件
+       * @param
+       */
+    enable(options?: {
+        emitEvent?: boolean;
+    }): void;
+    /**
+     * 使表单控件失活（禁用/只读/隐藏）
+     * @param
+     */
+    inactivate(status: UIStatus, options?: {
+        emitEvent?: boolean;
+    }): void;
+    validity(options?: {
+        emitEvent?: boolean;
+    }): void;
+    subscribe(subscriber: Function, subscription: any): () => void;
+    /**
+    * 设置控件的行为策略，包括：校验触发策略、校验过程策略、控件启用时校验策略
+    * @param opts
+    */
+    protected _setStrategy(opts: AbstractControlOptions): void;
+    protected _initValidator(opts?: AbstractControlOptions): void;
+    protected _initNotify(): void;
+    /**
+     * 设置控件的值，这是一个抽象方法。
+     */
+    abstract setValue(value: any, options?: Object): void;
+    /**
+     * 抽象通知方法
+     */
+    abstract notify(emitEvent: boolean): void;
+    abstract _forEachChild(cb: Function): void;
 }
-export {};
+export default AbstractControl;
