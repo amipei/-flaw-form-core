@@ -185,6 +185,7 @@ abstract class AbstractControl {
       opts?.asyncValidator ?? null,
       'change'
     )
+    console.log(this.validator)
   }
 
   protected _initNotify() {

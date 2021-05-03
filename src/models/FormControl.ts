@@ -23,12 +23,13 @@ class FormControl<V> extends AbstractControl {
     opts: AbstractControlOptions = {}
   ) {
     super();
+    //初始化校验
+    this._initValidator(opts);
     //申请表单状态
     this._applyFormState(formState);
     //设置策略
     this._setStrategy(opts);
-    //初始化校验
-    this._initValidator(opts);
+    
     //初始化通知
     this._initNotify();
 
