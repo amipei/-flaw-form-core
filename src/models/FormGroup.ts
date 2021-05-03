@@ -12,6 +12,8 @@ class FormGroup extends AbstractControl {
     super();
     //设置好策略
     this._setStrategy(opts);
+    //初始化校验
+    this._initValidator(opts);
     //初始化通知
     this._initNotify();
     //进行控制设置
