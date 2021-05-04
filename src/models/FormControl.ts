@@ -79,9 +79,9 @@ class FormControl<V> extends AbstractControl {
   notify(emitEvent: boolean): void {
     if (emitEvent) {
       this.stateSubject.notify({
-        value: { ...this.value },
-        errors: { ...this.errors },
-        status: { ...this.status }
+        value: this.value,
+        errors: this.errors,
+        status: this.status
       })
     }
   }
