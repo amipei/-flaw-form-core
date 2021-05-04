@@ -93,7 +93,7 @@ class FormGroup extends AbstractControl {
 
   private _resetQueue() {
     this.stateQueue = [];
-    this.waiting = true;
+    this.waiting = false;
   }
 }
 
