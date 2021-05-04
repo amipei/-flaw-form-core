@@ -1,6 +1,12 @@
 import AbstractControl from "../shared/AbstractControl";
 
 class FormArray extends AbstractControl {
+  enable(options: { emitEvent?: boolean | undefined; }): void {
+    throw new Error("Method not implemented.");
+  }
+  inactivate(status: "disabled" | "readonly" | "hidden", options: { emitEvent?: boolean | undefined; }): void {
+    throw new Error("Method not implemented.");
+  }
   
   controls!: any[];
 
