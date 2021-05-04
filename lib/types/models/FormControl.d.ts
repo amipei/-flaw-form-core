@@ -24,6 +24,12 @@ declare class FormControl<V> extends AbstractControl {
         emitModelToViewChange?: boolean;
         emitEvent?: boolean;
     }): void;
+    enable(options?: {
+        emitEvent?: boolean;
+    }): void;
+    inactivate(status: UIStatus, options?: {
+        emitEvent?: boolean;
+    }): void;
     notify(emitEvent: boolean): void;
     /**
      * 注册值改变的订阅

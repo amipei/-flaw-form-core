@@ -87,20 +87,20 @@ declare abstract class AbstractControl {
        * 启用表单控件
        * @param
        */
-    enable(options?: {
+    abstract enable(options: {
         emitEvent?: boolean;
     }): void;
     /**
      * 使表单控件失活（禁用/只读/隐藏）
      * @param
      */
-    inactivate(status: UIStatus, options?: {
+    abstract inactivate(status: UIStatus, options: {
         emitEvent?: boolean;
     }): void;
     validity(options?: {
         emitEvent?: boolean;
     }): void;
-    subscribe(subscriber: Function, subscription: any): () => void;
+    subscribe(subscriber: Function, subscription?: any): () => void;
     /**
     * 设置控件的行为策略，包括：校验触发策略、校验过程策略、控件启用时校验策略
     * @param opts
