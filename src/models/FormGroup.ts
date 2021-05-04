@@ -1,12 +1,20 @@
-import AbstractControl, { AbstractControlOptions, FormStatus } from "../shared/AbstractControl";
+import AbstractControl, { AbstractControlOptions, FormStatus, UIStatus } from "../shared/AbstractControl";
 
 class FormGroup extends AbstractControl {
-  queue: any[] = []
-  waiting = false
+
+  /**
+   * 缓存订阅响应状态
+   */
+  stateQueue: any[] = [];
+  /**
+   * 是否处于等待中
+   */
+  waiting: boolean = false
 
   status!: { [key: string]: FormStatus };
+
   constructor(
-    public controls: any,
+    public controls: { [key: string]: AbstractControl },
     opts: AbstractControlOptions = {}
   ) {
     super();
@@ -17,7 +25,7 @@ class FormGroup extends AbstractControl {
     //初始化通知
     this._initNotify();
     //进行控制设置
-    this._setControls(controls);
+    this._setControls();
   }
 
   setValue(value: { [key: string]: any }, options?: Object): void {
@@ -30,6 +38,18 @@ class FormGroup extends AbstractControl {
     // TODO: 触发模型的校验
     this.validity(options);
   }
+
+  enable(options: { emitEvent?: boolean } = {}): void {
+    this._forEachChild((control: AbstractControl) => {
+      control.enable(options);
+    });
+  }
+  inactivate(status: UIStatus, options: { emitEvent?: boolean } = {}): void {
+    this._forEachChild((control: AbstractControl) => {
+      control.inactivate(status, options);
+    });
+  }
+
   notify(emitEvent: boolean): void {
     if (emitEvent) {
       this.stateSubject.notify({
@@ -43,35 +63,37 @@ class FormGroup extends AbstractControl {
     Object.keys(this.controls).forEach(k => cb(this.controls[k], k));
   }
 
-  private _setControls(controls) {
-    this.controls = controls;
-    Object.keys(controls).forEach(name => {
-      const control = controls[name];
-      control.subscribe((state => {
-        this.queue.push({ state: state, name: name })
+  private _setControls() {
+    Object.keys(this.controls).forEach(name => {
+      const control = this.controls[name];
+
+      control.subscribe((state: any) => {
+        this.stateQueue.push({ name, state });
         if (!this.waiting) {
           this.waiting = true;
-          setTimeout(() => {
-            this.flush()
-          });
+          setTimeout(() => this._executeTask());
         }
-      }))
+      })
     })
   }
 
-  flush() {
-    this.queue.forEach(job => {
-      const { name, state } = job;
-      this.value[name] = state.value;
-      this.errors = this.errors ? { ...this.errors, [name]: state.errors } : { [name]: state.errors }
-      this.status[name] = state.status;
+  private _executeTask() {
+    this.stateQueue.forEach(task => {
+      const { name, state } = task;
+      this.value = { ...this.value, [name]: state.value };
+      this.status = { ...this.status, [name]: state.status };
+      this.errors = this.errors
+        ? { ...this.errors, [name]: state.errors }
+        : { [name]: state.errors };
     })
-    this.reset();
+
+    this._resetQueue();
     this.notify(true);
   }
-  reset() {
-    this.queue = [];
-    this.waiting = false;
+
+  private _resetQueue() {
+    this.stateQueue = [];
+    this.waiting = true;
   }
 }
 

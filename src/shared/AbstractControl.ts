@@ -119,33 +119,12 @@ abstract class AbstractControl {
    * 启用表单控件
    * @param  
    */
-  public enable(options: { emitEvent?: boolean} = {}): void {
-    this.status = FORM_STATUS.VALID;
-    this.errors = null;
-
-    this._forEachChild((control: AbstractControl) => {
-      control.enable(options);
-    });
-
-    this.validity(options);
-  }
+  abstract enable(options: { emitEvent?: boolean}): void;
   /**
    * 使表单控件失活（禁用/只读/隐藏）
    * @param  
    */
-  public inactivate(status: UIStatus, options: {
-    emitEvent?: boolean
-  } = {}): void {
-    this.status = FORM_STATUS[status.toUpperCase() as FormStatus];
-    this.errors = null;
-
-    this._forEachChild((control: AbstractControl) => {
-      control.inactivate(status, options);
-    });
-
-    //this.validity(options);
-  }
-
+  abstract inactivate(status: UIStatus, options: { emitEvent?: boolean}): void;
 
   public validity(options: {
     emitEvent?: boolean
@@ -166,7 +145,7 @@ abstract class AbstractControl {
     this.notify(options.emitEvent !== false);
   }
 
-  public subscribe(subscriber: Function, subscription: any) {
+  public subscribe(subscriber: Function, subscription: any = []) {
     return this.stateSubject.subscribe(subscriber as any, subscription)
   }
 
@@ -185,7 +164,6 @@ abstract class AbstractControl {
       opts?.asyncValidator ?? null,
       'change'
     )
-    console.log(this.validator)
   }
 
   protected _initNotify() {

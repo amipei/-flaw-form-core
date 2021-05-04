@@ -1,4 +1,4 @@
-import AbstractControl, { AbstractControlOptions, UIStatus } from "../shared/AbstractControl";
+import AbstractControl, { AbstractControlOptions, FormStatus, FORM_STATUS, UIStatus } from "../shared/AbstractControl";
 import { removeListItem } from "../shared/utils";
 
 export interface FormStateBoxedValue<T> {
@@ -9,6 +9,7 @@ export interface FormStateBoxedValue<T> {
 export type FormState<T> = T | FormStateBoxedValue<T> | null;
 
 class FormControl<V> extends AbstractControl {
+
   /**
    * 存储控件的值，默认下为null。
    */
@@ -29,7 +30,7 @@ class FormControl<V> extends AbstractControl {
     this._applyFormState(formState);
     //设置策略
     this._setStrategy(opts);
-    
+
     //初始化通知
     this._initNotify();
 
@@ -64,6 +65,17 @@ class FormControl<V> extends AbstractControl {
     this.validity(options);
   }
 
+  enable(options: { emitEvent?: boolean } = {}): void {
+    this.status = FORM_STATUS.VALID;
+    this.errors = null;
+    this.validity(options);
+  }
+  inactivate(status: UIStatus, options: { emitEvent?: boolean } = {}): void {
+    this.status = FORM_STATUS[status.toUpperCase() as FormStatus];
+    this.errors = null;
+    this.validity(options);
+  }
+
   notify(emitEvent: boolean): void {
     if (emitEvent) {
       this.stateSubject.notify({
@@ -90,7 +102,7 @@ class FormControl<V> extends AbstractControl {
     removeListItem(this.#onChange, fn);
   }
 
-  _forEachChild(cb: Function): void {};
+  _forEachChild(cb: Function): void { };
 
 
   private _applyFormState(formState: FormState<V>): void {
