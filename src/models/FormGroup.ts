@@ -1,4 +1,5 @@
-import AbstractControl, { AbstractControlOptions, FormStatus, UIStatus } from "../shared/AbstractControl";
+import AbstractControl, { AbstractControlOptions, FormStatus, FORM_STATUS, UIStatus } from "../shared/AbstractControl";
+import FormArray from "./FormArray";
 
 class FormGroup extends AbstractControl {
 
@@ -59,6 +60,18 @@ class FormGroup extends AbstractControl {
       });
     }
   }
+
+  getControl(name: string): AbstractControl|null {
+    let control: AbstractControl|null = null;
+    Object.keys(this.controls).forEach(currentName => {
+      //const control = this.controls[currentName];
+      if (currentName === name) {
+        control = this.controls[currentName];
+      }
+    })
+    return control;
+  }
+
   _forEachChild(cb: (v: any, k: string) => void): void {
     Object.keys(this.controls).forEach(k => cb(this.controls[k], k));
   }

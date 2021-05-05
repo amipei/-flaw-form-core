@@ -1,5 +1,7 @@
 import AbstractControl from "../shared/AbstractControl";
 declare class FormArray extends AbstractControl {
+    getControl(name: string): AbstractControl;
+    constructor(c: any, cc: any);
     enable(options: {
         emitEvent?: boolean | undefined;
     }): void;

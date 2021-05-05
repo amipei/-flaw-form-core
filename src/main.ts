@@ -1,38 +1,48 @@
+import FormArray from "./models/FormArray";
 import FormControl from "./models/FormControl";
 import FormGroup from "./models/FormGroup";
-import { GroupModel } from "./schemas";
+import { ArraySchema, GroupSchema } from "./schemas";
 import { omit } from "./shared/utils";
-export { default as defineModel } from './schemas/index' 
+export { default as defineSchema } from './schemas/index' 
+
+// schema -> control
+const transformControlTree = (schemas: any, options = {}) => {
+  //每次函数开始的配置
+  const currentOptions = Object.assign(options, schemas.options);
+
+  const nextOptions = omit(currentOptions, ['validator', 'asyncValidator']);
+
+  if (schemas instanceof GroupSchema) {
+    const controls: any = {};
+    Object.keys(schemas.config).forEach(name => {
+      const schema = schemas.config[name];
+      controls[name] = transformControlTree(schema, nextOptions)
+    })
+    return new FormGroup(controls, currentOptions)
+  } else if (schemas instanceof ArraySchema) {
+    const controls: any = [];
+    schemas.config.forEach(ele => {
+      controls.push(transformControlTree(ele, nextOptions))
+    });
+    return new FormArray(schemas.config, currentOptions);
+  } else {
+    return new FormControl(schemas.config, currentOptions)
+  }
+}
 
 const createForm = (
-  formModel: any
+  schema: GroupSchema | ArraySchema
 ) => {
-  let root;
+  const root = transformControlTree(schema);
 
-  if (formModel instanceof GroupModel) {
-    root = transformTree(formModel);
-  }
   const api = {
-    root: root
+    registerControl: (name: string) => {
+      return root.getControl(name)
+    }
   }
 
-  return api
+  return api;
 }
-// model -> control
-const transformTree = (formModel: any, opts = {}) => {
-  const controls = {};
-  const currentOpts = Object.assign(omit(opts, ['validator', 'asyncValidator']), formModel.opts);
-  const dgOpts = omit(currentOpts, ['validator', 'asyncValidator'])
-  Object.keys(formModel.controls).forEach(name => {
-    const model = formModel.controls[name];
-    if (Array.isArray(model)) {
-      controls[name] = new FormControl(model[0], Object.assign(dgOpts, model[1]))
-    } else if (model instanceof GroupModel) {
-      controls[name] = transformTree(model, dgOpts);
-    }
-  })
 
-  return new FormGroup(controls, currentOpts)
-}
 
 export default createForm;

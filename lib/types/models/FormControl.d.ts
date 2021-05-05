@@ -31,6 +31,7 @@ declare class FormControl<V> extends AbstractControl {
         emitEvent?: boolean;
     }): void;
     notify(emitEvent: boolean): void;
+    getControl(name: string): AbstractControl;
     /**
      * 注册值改变的订阅
      * @param fn

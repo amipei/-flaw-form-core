@@ -181,6 +181,9 @@ abstract class AbstractControl {
 
 
   abstract _forEachChild(cb: Function): void;
+
+  abstract getControl(name: string): AbstractControl|null;
+
 }
 
 export default AbstractControl

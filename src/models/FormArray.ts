@@ -1,6 +1,12 @@
 import AbstractControl from "../shared/AbstractControl";
 
 class FormArray extends AbstractControl {
+  getControl(name: string): AbstractControl {
+    throw new Error("Method not implemented.");
+  }
+  constructor(c: any, cc: any){
+    super();
+  }
   enable(options: { emitEvent?: boolean | undefined; }): void {
     throw new Error("Method not implemented.");
   }

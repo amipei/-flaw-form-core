@@ -117,5 +117,6 @@ declare abstract class AbstractControl {
      */
     abstract notify(emitEvent: boolean): void;
     abstract _forEachChild(cb: Function): void;
+    abstract getControl(name: string): AbstractControl | null;
 }
 export default AbstractControl;

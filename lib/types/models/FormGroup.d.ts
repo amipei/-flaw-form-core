@@ -27,6 +27,7 @@ declare class FormGroup extends AbstractControl {
         emitEvent?: boolean;
     }): void;
     notify(emitEvent: boolean): void;
+    getControl(name: string): AbstractControl | null;
     _forEachChild(cb: (v: any, k: string) => void): void;
     private _setControls;
     private _executeTask;

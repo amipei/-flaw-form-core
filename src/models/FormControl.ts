@@ -9,6 +9,7 @@ export interface FormStateBoxedValue<T> {
 export type FormState<T> = T | FormStateBoxedValue<T> | null;
 
 class FormControl<V> extends AbstractControl {
+  
 
   /**
    * 存储控件的值，默认下为null。
@@ -85,7 +86,9 @@ class FormControl<V> extends AbstractControl {
       })
     }
   }
-
+  getControl(name: string): AbstractControl {
+    throw new Error("Method not implemented.");
+  }
   /**
    * 注册值改变的订阅
    * @param fn 

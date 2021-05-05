@@ -1,32 +1,53 @@
-export class GroupModel {
+export class GroupSchema {
   constructor(
-    private controls: any,
-    private opts: any
-  ) {
-  }
+    public config: any,
+    public options: any
+  ) { }
 }
 
-function defineModel(
-  controlsConfig: { [key: string]: any},
-  opts: any
-) {
-  const controls = {};
-  Object.keys(controlsConfig).forEach(controlName => {
-    controls[controlName] = createFullControlConfig(controlsConfig[controlName]);
-  })
-  return Object.freeze(new GroupModel(controls, opts))
+export class ArraySchema {
+  constructor(
+    public config: any,
+    public options: any
+  ) { }
 }
 
-function createFullControlConfig (controlConfig: any) {
-  if (controlConfig instanceof GroupModel) {
-    return controlConfig
-  } else if (Array.isArray(controlConfig)) {
-    const value = controlConfig[0];
-    const opts = controlConfig.length > 1 ? controlConfig[1]: {};
-    return [value, opts]
+export class BaseSchema {
+  constructor(
+    public config: any,
+    public options: any
+  ) { }
+}
+
+const createSchemaByConfig = (config: any) => {
+  if (config instanceof GroupSchema || config instanceof ArraySchema) {
+    return config;
+  } else if (Array.isArray(config)) {
+    //return [config[0], config.length > 1 ? config[1] : {}];
+    return new BaseSchema(config[0], config.length > 1 ? config[1] : {})
   } else {
-    return [controlConfig, {}]
+    //return [config, {}]
+    return new BaseSchema(config, {})
   }
 }
 
-export default defineModel;
+const defineSchema = (
+  config: any,
+  options: any = {}
+) => {
+  if (Array.isArray(config)) {
+    const arrayConfig: any[] = [];
+    config.forEach(ele => {
+      arrayConfig.push(createSchemaByConfig(ele));
+    })
+    return Object.freeze(new ArraySchema(arrayConfig, options))
+  } else {
+    const groupConfig = {};
+    Object.keys(config).forEach(name => {
+      groupConfig[name] = createSchemaByConfig(config[name]);
+    })
+    return Object.freeze(new GroupSchema(groupConfig, options))
+  }
+}
+
+export default defineSchema
