@@ -1,6 +1,6 @@
 {
   "name": "flaw-form-core",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "这是一个受Angular Forms影响而开发的表单库。",
   "keywords": [
     "form",
