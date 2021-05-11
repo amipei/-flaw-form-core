@@ -33,18 +33,31 @@ class StateSubject<T extends { [key: string]: any }> {
 
   private subscriberEntity: SubscriberEntity<T> = {};
 
-  private _catchState: T | null = null;
+  private _catchState!: T;
 
   constructor(
     private _keys: (keyof T)[],
     private _shallowEqualKeys: (keyof T)[],
-  ) { }
+    initialValue: any
+  ) {
+    this._catchState = initialValue;
+  } 
 
-  subscribe(subscriber: Subscriber<T>, subscription: Subscription<T>) {
+  subscribe(subscriber: Subscriber<T>, subscription: Subscription<T>, silent?: boolean) {
     const index = this._index++;
     const filterSubscription = filterSubscriptionUnite(this._keys, subscription);
     this.subscriberEntity[index] = {
       subscriber, subscription: filterSubscription
+    }
+
+    if (silent !== false) {
+      this.notifySubscriber(
+        this._catchState,
+        this._catchState,
+        subscriber,
+        filterSubscription,
+        true
+      )
     }
 
     return () => {
@@ -52,11 +65,14 @@ class StateSubject<T extends { [key: string]: any }> {
     }
   }
 
+
+
   notifySubscriber(
-    oldState: T | null,
+    oldState: T,
     newState: T,
     subscriber: Subscriber<T>,
     subscription: Subscription<T>,
+    force?: boolean
   ) {
     let different = false, state = {} as T;
 
@@ -72,7 +88,7 @@ class StateSubject<T extends { [key: string]: any }> {
       }
     })
 
-    if (different) {
+    if (different || force) {
       subscriber(state);
     }
   }

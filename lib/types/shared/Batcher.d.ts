@@ -1,11 +1,10 @@
 declare class Batcher {
-    has: any;
-    queue: any;
-    waiting: any;
-    constructor();
-    reset(): void;
+    notifyCB: Function;
+    queue: any[];
+    waiting: boolean;
+    constructor(notifyCB: Function);
     push(job: any): void;
     flush(): void;
-    update(): void;
+    reset(): void;
 }
 export default Batcher;

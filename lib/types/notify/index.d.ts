@@ -10,9 +10,9 @@ declare class StateSubject<T extends {
     private _index;
     private subscriberEntity;
     private _catchState;
-    constructor(_keys: (keyof T)[], _shallowEqualKeys: (keyof T)[]);
-    subscribe(subscriber: Subscriber<T>, subscription: Subscription<T>): () => void;
-    notifySubscriber(oldState: T | null, newState: T, subscriber: Subscriber<T>, subscription: Subscription<T>): void;
+    constructor(_keys: (keyof T)[], _shallowEqualKeys: (keyof T)[], initialValue: any);
+    subscribe(subscriber: Subscriber<T>, subscription: Subscription<T>, silent?: boolean): () => void;
+    notifySubscriber(oldState: T, newState: T, subscriber: Subscriber<T>, subscription: Subscription<T>, force?: boolean): void;
     notify(state: T): void;
 }
 export default StateSubject;

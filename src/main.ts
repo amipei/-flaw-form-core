@@ -1,9 +1,13 @@
-import FormArray from "./models/FormArray";
-import FormControl from "./models/FormControl";
-import FormGroup from "./models/FormGroup";
+
+import FormArray from "./model/FormArray";
+import FormControl from "./model/FormControl";
+import FormGroup from "./model/FormGroup";
 import { ArraySchema, GroupSchema } from "./schemas";
+import AbstractContainerControl from "./shared/AbstractContainerControl";
+import AbstractControl from "./shared/AbstractControl";
+
 import { omit } from "./shared/utils";
-export { default as defineSchema } from './schemas/index' 
+export { default as defineSchema } from './schemas/index';
 
 // schema -> control
 const transformControlTree = (schemas: any, options = {}) => {
@@ -33,16 +37,19 @@ const transformControlTree = (schemas: any, options = {}) => {
 const createForm = (
   schema: GroupSchema | ArraySchema
 ) => {
-  const root = transformControlTree(schema);
+  const root = transformControlTree(schema) as AbstractContainerControl;
 
   const api = {
-    registerControl: (name: string) => {
-      return root.getControl(name)
-    }
+    registerControl: (name?: string): AbstractControl | null => {
+      return name ? root.get(name) : root;
+    },
+    root
   }
 
   return api;
 }
 
-
+export {
+  FormControl
+}
 export default createForm;

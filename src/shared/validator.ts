@@ -178,7 +178,11 @@ class Validator_ implements Validator {
 
       const result = options.validationAll ? asyncValidate(control, filterValidors) : asyncValidateFirst(control, filterValidors)
       this.#asyncSubscription = toObservable(result).subscribe({ next: (errors: any) => subscriber(errors) })
+
+      return
     }
+
+    subscriber(null);
   }
 
   private _coerceToValidatorMap<ValidatorFnType>(validator: GeneralValidator<ValidatorFnType>) {
